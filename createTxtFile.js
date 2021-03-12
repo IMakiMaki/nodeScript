@@ -2,10 +2,12 @@ const { writeFile } = require("./utils/fs");
 const { getRandomInt } = require("./utils/index");
 const { getUnicodeArray } = require("./utils/unicode");
 
+const { downloadsPath } = require("./local/index");
+
 const data = new Uint8Array(Buffer.from(createFileStr(1000000 / 3)));
-writeFile(`${__dirname}/文件3.txt`, data)
+writeFile(`${downloadsPath}/文件.txt`, data)
   .then(() => {
-    console.log("文件已被保存");
+    console.log(`文件已被保存\n目录:${downloadsPath}/文件.txt`);
   })
   .catch((err) => {
     throw err;
