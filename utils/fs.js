@@ -5,4 +5,7 @@ module.exports = {
   writeFile(...args) {
     return promiseFy(fs.writeFile, args);
   },
+  readDir(path) {
+    return promiseFy(fs.readdir, [path]);
+  },
 };

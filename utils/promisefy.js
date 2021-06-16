@@ -4,9 +4,9 @@ module.exports = {
       throw "promiseFy can only receive function";
     }
     return new Promise((resolve, reject) => {
-      func(...args, (err) => {
+      func(...args, (err, res) => {
         if (!err) {
-          resolve();
+          resolve(res);
         } else {
           reject(err);
         }
