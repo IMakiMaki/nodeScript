@@ -4,7 +4,7 @@ const { readFileSync } = require("fs");
 const path = require("path");
 const { downloadsPath } = require("./local/index");
 
-const SVG_DIR = path.join(__dirname, "./zondicons/");
+const SVG_DIR = path.join(process.cwd(), "./zondicons/");
 
 // 生成camelCase风格的变量名
 const fileName2ConstName = (name) => {
@@ -12,12 +12,15 @@ const fileName2ConstName = (name) => {
     throw "error";
   }
   let retName = "";
-  // 去除文件名中的空格 & 首位的数字
-  const fileName = name.replace(/\s/g, "").replace(/^\d/, "");
-  if (!fileName.includes("-")) {
-    retName = `${fileName[0].toLowerCase()}${fileName.slice(1)}`;
+  // 将不符合Js变量规范的字符全部清除
+  const constName = name
+    .trim()
+    .replace(/[^A-Za-z_$\d]/g, "-")
+    .replace(/^[^A-Za-z_$]/, "");
+  if (!constName.includes("-")) {
+    retName = `${constName[0].toLowerCase()}${constName.slice(1)}`;
   } else {
-    const words = fileName.split("-");
+    const words = constName.split("-").filter((word) => !!word);
     retName = words.reduce((prev, current, index) => {
       return `${prev}${
         index === 0 ? current.toLowerCase() : current[0].toUpperCase() + current.slice(1)
@@ -27,8 +30,9 @@ const fileName2ConstName = (name) => {
   try {
     // try转换后的变量名是否符合规则
     eval(`var ${retName}`);
+    console.log(`'${name}' => '${retName}'`);
   } catch {
-    throw `Convert error, file name '${name}' can not be converted to a js variable`;
+    throw `Convert error, file name '${name}(be converted to '${constName}')' can not be converted to a js variable`;
   }
   return retName;
 };
